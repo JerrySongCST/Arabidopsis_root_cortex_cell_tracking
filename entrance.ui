@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>620</width>
+    <height>386</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Cell Tracking System</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QFrame,QFrame[bcolor=&quot;white&quot;]{
+	background-color: rgba(255,255,255,1);
+}
+QFrame[bcolor=&quot;grey&quot;]{
+	background-color: rgba(245,245,245,1);
+}
+QFrame[name=&quot;bar&quot;]{
+	background-color: qlineargradient(spread:pad,x1:0,y1:0,x2:1,y2:0,stop:0 rgba(133,194,238 255), stop:1 rgba(137,160,214,255));
+	border-top-left-radius:10px;
+	border-top-right-radius:10px;
+}
+QFrame[name=&quot;main&quot;]{
+	border-bottom-left-radius:10px;
+	border-bottom-right-radius:10px;
+}
+
+QLabel{
+	font: 20px &quot;黑体&quot;;
+	background: transparent
+}
+QLabel[name=&quot;mainTitle&quot;]{
+	font-weight: 600;
+	font: 28px &quot;黑体&quot;;
+	color: rgba(137,160,214,1);
+}
+QLabel[name=&quot;title&quot;]{
+	font-weight: 600;
+	font: 24px &quot;黑体&quot;;
+	color: rgba(137,160,214,1);
+}
+QLabel[name=&quot;subtitle&quot;]{
+	font-weight: 600;
+	font: 18px &quot;黑体&quot;;
+	color: rgba(0,0,0,0.6);
+}
+QLabel[bcolor=&quot;logo&quot;]{
+	image: url(./assert/img/logo.png);
+}
+
+QPushButton{
+	border-radius:8px;
+	color: rgba(255,255,255,0.9);
+	font-weight: 600;
+	font: 20px &quot;黑体&quot;;
+	background-color: qlineargradient(spread:pad,x1:0,y1:0,x2:1,y2:0,stop:0 rgba(133,194,238 255), stop:1 rgba(137,160,214,255));
+}
+QPushButton[name=&quot;sysbutton&quot;]{
+	color: rgba(255,255,255,0.9);
+	font-weight: 600;
+	font: 22px &quot;Yu Gothic UI Semibold&quot;;
+	background:transparent;
+}
+QPushButton:pressed{
+	border:2px solid rgba(245,245,245,255);
+}
+QPushButton[name=&quot;sysbutton&quot;]:hover{
+	background-color:#423f48;
+}
+QPushButton[name=&quot;sysbutton&quot;]:pressed{
+	background-color:#c0c0c0;
+}
+QPushButton#showMin{
+	image: url(./assert/img/min.png);
+	padding: -1px;
+}
+QPushButton#showMax{
+	image: url(./assert/img/max.png);
+	padding: 1px;
+}
+QPushButton#closeWin{
+	image: url(./assert/img/close.png);
+	padding: 2px;
+}</string>
+  </property>
+  <widget class="QPushButton" name="cell_detection">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>270</y>
+     <width>151</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Cell Detection</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>40</y>
+     <width>600</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>600</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>600</width>
+     <height>16777215</height>
+    </size>
+   </property>
+   <property name="text">
+    <string>Arabidopsis Root Cortex Cell Tracking</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+   <property name="name" stdset="0">
+    <string>mainTitle</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="cell_tracking">
+   <property name="geometry">
+    <rect>
+     <x>360</x>
+     <y>270</y>
+     <width>151</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Cell Tracking</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>150</y>
+     <width>600</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>600</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>600</width>
+     <height>16777215</height>
+    </size>
+   </property>
+   <property name="text">
+    <string>Developer: Yu Song</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>90</y>
+     <width>600</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>600</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>600</width>
+     <height>16777215</height>
+    </size>
+   </property>
+   <property name="text">
+    <string>Intelligent Image Processing Lab, Ritsumeikan University</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
