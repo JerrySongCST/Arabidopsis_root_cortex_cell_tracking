@@ -27,7 +27,7 @@ For manual installation, we tested our code on **Python 3.10** with **Torch 2.3.
 ```bash
 conda create -n Arabidopsis python=3.10
 conda activate Arabidopsis
-pip install torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 --index-url https://download.pytorch.org/whl/cu121
+pip install torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 --index-url https://download.pytorch.org/whl/cu118
 git clone https://github.com/JerrySongCST/Arabidopsis_root_cortex_cell_tracking.git && cd Arabidopsis_root_cortex_cell_tracking
 pip install -e .
 ```
