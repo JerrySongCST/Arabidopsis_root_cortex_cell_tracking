@@ -804,8 +804,7 @@ class Detection(QMainWindow):
             if self.ui.radioButton.isChecked():
                 model = UNet()
                 model.to(dev)
-                check_point = load(r'./unet_2d_best_goh.pth')
-                # check_point = load(r'./unet_cell_best_augmentation1.pth', map_location=dev)
+                check_point = load(r'./unet_2d_best_goh.pth', map_location=dev)
             else:
                 print('This is 3d unet')
                 model = unet3d()
