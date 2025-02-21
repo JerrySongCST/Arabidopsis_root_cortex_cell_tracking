@@ -34,7 +34,7 @@ pip install -e .
 
 ### Downloading Checkpoints for Detection Algorithm
 
-Both ZIP file users and manual installation users need to download model checkpoints [here](https://drive.google.com/drive/folders/1XdNGD-tufMjMFptxqqRKve0RJdr8RXB9?usp=drive_link). Place the checkpoint files in the appropriate folder as shown:
+Both ZIP file users and manual installation users need to download model checkpoints [here](https://drive.google.com/drive/folders/1XdNGD-tufMjMFptxqqRKve0RJdr8RXB9?usp=sharing). Place the checkpoint files in the appropriate folder as shown:
 
 ![Checkpoint placement](assets/pth.png?raw=true)
 
