@@ -55,7 +55,6 @@ Run the GUI using:
 python launch.py
 ```
 
-Alternatively, double-click **"launch.exe"**.
 
 ### Cell Detection 
 0. Downloading Checkpoints as instructed above.
