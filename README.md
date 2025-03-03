@@ -18,9 +18,7 @@ For more details, refer to our paper: [[`Paper`](https://academic.oup.com/pcp/ar
 
 ## Installation
 
-We provide a GUI system for this method. If you do not wish to install Python and PyTorch manually, you can download the packaged ZIP file [here](https://drive.google.com/file/d/15m6AjEMTTf5cfnT3oOeC8sA0WWa-XDQE/view?usp=sharing) and run the executable (`.exe`). Note: This is only available for Windows users.
-
-For manual installation, we tested our code on **Python 3.8** with **Torch 2.3.0**. We recommend using **Anaconda** to set up an environment and install dependencies:
+We provide a GUI system for this method. We tested our code on **Python 3.8** with **Torch 2.3.0**. We recommend using **Anaconda** to set up an environment and install dependencies:
 
 ### Steps:
 
@@ -38,7 +36,7 @@ sudo apt-get install libxcb-xinerama0
 
 ### Downloading Checkpoints for Detection Algorithm
 
-Both ZIP file users and manual installation users need to download model checkpoints [here](https://drive.google.com/drive/folders/1XdNGD-tufMjMFptxqqRKve0RJdr8RXB9?usp=sharing). Place the checkpoint files in the appropriate folder as shown:
+Users need to download model checkpoints [here](https://drive.google.com/drive/folders/1XdNGD-tufMjMFptxqqRKve0RJdr8RXB9?usp=sharing). Place the checkpoint files in the appropriate folder as shown:
 
 ![Checkpoint placement](assets/pth.png?raw=true)
 
