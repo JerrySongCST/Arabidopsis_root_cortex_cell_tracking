@@ -31,6 +31,10 @@ pip install torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 --index-url https
 git clone https://github.com/JerrySongCST/Arabidopsis_root_cortex_cell_tracking.git && cd Arabidopsis_root_cortex_cell_tracking
 pip install -e .
 ```
+For ubuntu users:
+```bash
+sudo apt-get install libxcb-xinerama0
+```
 
 ### Downloading Checkpoints for Detection Algorithm
 
