@@ -57,31 +57,32 @@ python launch.py
 
 
 ### Cell Detection 
-0. Downloading Checkpoints as instructed above.
 
-1. Click **"Cell Detection"**:
+1. Downloading Checkpoints as instructed above.
+
+2. Click **"Cell Detection"**:
    
    ![Detection Button](assets/detection_ui.jpg?raw=true)
 
 
-2. Click **"Choose"** and select the folder containing the `.tif` file (not the file itself!). Ensure that the .tif file is inside the selected folder. Do not include any .xml file that shares the same name as the .tif file in the selected folder
+3. Click **"Choose"** and select the folder containing the `.tif` file (not the file itself!). Ensure that the .tif file is inside the selected folder. Do not include any .xml file that shares the same name as the .tif file in the selected folder
 
 
    ![Choose Button](assets/choose1.jpg?raw=true)
 
 
-3. Select either:
+4. Select either:
 
    - **2D Model** – Performs slice-by-slice detection using a trained 2D U-Net.
    
    - **3D Model** – Processes the entire volume per frame using a trained 3D U-Net (requires significantly more GPU memory).
    
-4. Click **"Automatic Detect"** to start. **GPU acceleration is strongly recommended.**
+5. Click **"Automatic Detect"** to start. **GPU acceleration is strongly recommended.**
 
 
    ![Detect Button](assets/detect.jpg?raw=true)
 
-5. Once completed, the GUI generates an XML file that can be loaded into [TrackMate](https://imagej.net/plugins/trackmate/). The name is same as tif image file name.
+6. Once completed, the GUI generates an XML file that can be loaded into [TrackMate](https://imagej.net/plugins/trackmate/). The name is same as tif image file name.
 
 ### Tracking
 
