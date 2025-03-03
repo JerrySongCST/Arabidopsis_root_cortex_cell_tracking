@@ -133,16 +133,13 @@ Alternatively, double-click **"launch.exe"**.
    ![Reset Cell ID](assets/reset_id.jpg?raw=true)
 
 
-8. Click **"Link Lines"**, **"Check Mitotic"**, and **"Track Cells"** to finalize tracking.
+8. Click **"Link Lines"** and **"Track Cells"** to finalize tracking.
 
 
    ![Link Lines](assets/link_lines.jpg?raw=true)
 
 
-   ![Check Mitotic](assets/check_mitotic.jpg?raw=true)
-
-
-   ![Track Cells](assets/cell_track.jpg?raw=true)
+   ![Track Cells](assets/cell_track.png?raw=true)
 
 9. Click **"Save XML"** (don't forget the `.xml` extension). Results can be loaded into [TrackMate](https://imagej.net/plugins/trackmate/).
 
