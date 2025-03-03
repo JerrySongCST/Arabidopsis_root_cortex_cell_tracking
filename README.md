@@ -18,7 +18,7 @@ For more details, refer to our paper: [[`Paper`](https://academic.oup.com/pcp/ar
 
 ## Installation
 
-We provide a GUI system for this method. We tested our code on **Python 3.8** with **Torch 2.3.0**. We recommend using **Anaconda** to set up an environment and install dependencies:
+We provide a GUI system for this method. We tested our code on **Python 3.8** with **Torch 2.3.0** on **Ubuntu20.0.4**. We recommend using **Anaconda** to set up an environment and install dependencies:
 
 ### Steps:
 
