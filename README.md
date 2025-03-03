@@ -59,10 +59,10 @@ python launch.py
 
 Alternatively, double-click **"launch.exe"**.
 
-### Cell Detection
+### Cell Detection 
+0. Downloading Checkpoints as instructed above.
 
 1. Click **"Cell Detection"**:
-
    
    ![Detection Button](assets/detection_ui.jpg?raw=true)
 
