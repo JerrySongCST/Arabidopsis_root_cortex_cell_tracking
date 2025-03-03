@@ -907,26 +907,6 @@ def link_spots_by_xy(cells_0, cells_1, id, directory, nethermost_0, nethermost_i
                     index=False)
     return nethermost_1, nethermost_index_1
 
-def mitotic_check(cells):
-    for i in range(8):
-        globals()[f"cells_0_{i}"] = []
-    for i in range(len(cells)):
-        globals()[f"cells_0_{int(cells[i][-1])}"].append(cells[i])
-    caution_cells = []
-    for i in range(8):
-        globals()[f"cells_0_{i}"] = np.array(globals()[f"cells_0_{i}"])
-        ys_0 = globals()[f"cells_0_{i}"][:, 2]
-        ys_0 = np.array([-y for y in ys_0])
-        globals()[f"cells_0_{i}"] = globals()[f"cells_0_{i}"][ys_0.argsort()]
-        for j in range(0,  len(globals()[f"cells_0_{i}"])):
-            if globals()[f"cells_0_{i}"][j][4]:
-                if j != len(globals()[f"cells_0_{i}"])-1:
-                    if abs(globals()[f"cells_0_{i}"][j][2] - globals()[f"cells_0_{i}"][j-1][2]) >=18 or abs(globals()[f"cells_0_{i}"][j][2] - globals()[f"cells_0_{i}"][j+1][2]) >=18:
-                        caution_cells.append(globals()[f"cells_0_{i}"][j][0])
-                else:
-                    if abs(globals()[f"cells_0_{i}"][j][2] - globals()[f"cells_0_{i}"][j-1][2]) >= 18:
-                        caution_cells.append(globals()[f"cells_0_{i}"][j][0])
-    return caution_cells
 
 
 
