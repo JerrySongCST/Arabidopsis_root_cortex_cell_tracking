@@ -7,7 +7,7 @@ This repository presents a novel method for tracking Arabidopsis root cortex cel
 ## Overview
 
 ### Detection Phase
-We employ a semantic segmentation approach with a U-Net backbone to detect cells and classify dividing and non-dividing cells. Pre-trained weights are provided. Our GUI system generates files compatible with ImageJ/Fiji TrackMate, allowing for easy manual refinement.
+We employ a semantic segmentation approach with a U-Net backbone to detect cells and classify dividing and non-dividing cells. Pre-trained weights are provided. Our GUI system generates files compatible with ImageJ/Fiji [TrackMate](https://imagej.net/plugins/trackmate/), allowing for easy manual refinement.
 
 ### Tracking Phase
 We introduce an accurate tracking method based on a Genetic Algorithm (GA) and K-means clustering. Our coarse-to-fine strategy begins with cell file-level tracking of cell nuclei, where GA selects an optimal projection plane. K-means then clusters the projected cells into eight groups, each representing a distinct line of cells. Our GUI provides tools for correcting clustering errors, and the final tracking results can be visualized in TrackMate.
