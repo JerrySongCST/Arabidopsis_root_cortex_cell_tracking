@@ -10,7 +10,7 @@ This repository presents a novel method for tracking Arabidopsis root cortex cel
 We employ a semantic segmentation approach with a U-Net backbone to detect cells and classify dividing and non-dividing cells. Pre-trained weights are provided. Our GUI system generates files compatible with ImageJ/Fiji TrackMate, allowing for easy manual refinement.
 
 ### Tracking Phase
-We introduce an accurate tracking method based on a Genetic Algorithm (GA) and K-means clustering. Our coarse-to-fine strategy begins with line-level tracking of cell nuclei, where GA selects an optimal projection plane. K-means then clusters the projected cells into eight groups, each representing a distinct line of cells. Our GUI provides tools for correcting clustering errors, and the final tracking results can be visualized in TrackMate.
+We introduce an accurate tracking method based on a Genetic Algorithm (GA) and K-means clustering. Our coarse-to-fine strategy begins with cell file-level tracking of cell nuclei, where GA selects an optimal projection plane. K-means then clusters the projected cells into eight groups, each representing a distinct line of cells. Our GUI provides tools for correcting clustering errors, and the final tracking results can be visualized in TrackMate.
 
 With precise detection and clustering, Arabidopsis root nuclei can be accurately tracked. To our knowledge, this is the first successful attempt to address a long-standing challenge in time-lapse microscopy of root meristems by providing an accurate tracking method for Arabidopsis root nuclei.
 
@@ -63,7 +63,7 @@ Alternatively, double-click **"launch.exe"**.
    ![Detection Button](assets/detection_ui.jpg?raw=true)
 
 
-2. Click **"Choose"** and select the folder containing the `.tif` file (not the file itself!).
+2. Click **"Choose"** and select the folder containing the `.tif` file (not the file itself!). Ensure that the .tif file is inside the selected folder. Do not include any .xml file that shares the same name as the .tif file in the selected folder
 
 
    ![Choose Button](assets/choose1.jpg?raw=true)
@@ -71,16 +71,16 @@ Alternatively, double-click **"launch.exe"**.
 
 3. Select either:
 
-   - **2D Model** (performs slice-by-slice detection using a trained 2D U-Net)
+   - **2D Model** – Performs slice-by-slice detection using a trained 2D U-Net.
    
-   - **3D Model** (processes the entire volume per frame using a trained 3D U-Net)
+   - **3D Model** – Processes the entire volume per frame using a trained 3D U-Net (requires significantly more GPU memory).
    
 4. Click **"Automatic Detect"** to start. **GPU acceleration is strongly recommended.**
 
 
    ![Detect Button](assets/detect.jpg?raw=true)
 
-5. Once completed, the GUI generates an XML file that can be loaded into TrackMate. The name is same as tif image file name.
+5. Once completed, the GUI generates an XML file that can be loaded into [TrackMate](https://imagej.net/plugins/trackmate/). The name is same as tif image file name.
 
 ### Tracking
 
@@ -140,7 +140,7 @@ Alternatively, double-click **"launch.exe"**.
 
    ![Track Cells](assets/cell_track.jpg?raw=true)
 
-9. Click **"Save XML"** (don't forget the `.xml` extension). Results can be loaded into TrackMate.
+9. Click **"Save XML"** (don't forget the `.xml` extension). Results can be loaded into [TrackMate](https://imagej.net/plugins/trackmate/).
 
 
    ![Save XML](assets/save_xml.jpg?raw=true)
@@ -148,7 +148,7 @@ Alternatively, double-click **"launch.exe"**.
 
 ### Additional Tools
 
-- **"Reload XML"**: Reloads detection XML if changes were made.
+- **"Reload XML"**: This function reloads the detection XML file after modifications have been made. Use this feature when nuclei have been added or removed in the TrackMate XML file after performing clustering on the cell file.
 
 
    ![Reload XML](assets/reload_xml.jpg?raw=true)
