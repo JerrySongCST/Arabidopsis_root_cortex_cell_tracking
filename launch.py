@@ -19,17 +19,15 @@ import multiprocessing
 multiprocessing.freeze_support()
 
 
-
 class SignalStore(QObject):
-    
     progress_update = Signal(int)
-    
+
 
 class TerminateSignal(QObject):
     terminate = Signal()
 
+
 class BoolSignal(QObject):
-    
     progress_update = Signal(bool)
 
 
@@ -78,17 +76,19 @@ class Tracking(QMainWindow):
     def link(self):
         self.ui.progressBar.show()
         new_ranks = link_lines(self.length, self.base_direc)
+
         def workerThreadFunc():
             self.ongoing = True
             for i in range(self.length):
                 sleep(1)
                 # 设置进度值
                 line_correspondence(self.base_direc, i, new_ranks[i])
-                so1.progress_update.emit(i+1)
+                so1.progress_update.emit(i + 1)
                 # self.ui.progressBar.setValue(i + 1)
             self.ongoing = False
             self.ui.track_cells.show()
             self.ui.link_lines.hide()
+
         if self.ongoing:
             QMessageBox.warning(
                 self.ui,
@@ -105,9 +105,10 @@ class Tracking(QMainWindow):
 
     def track(self):
         self.ui.progressBar.hide()
-        self.ui.progressBar.setRange(0, self.length-1)
+        self.ui.progressBar.setRange(0, self.length - 1)
         self.ui.progressBar.setValue(0)
         self.ui.progressBar.show()
+
         def workerThreadFunc():
             self.ongoing = True
             get_mitotic_color(self.base_direc)
@@ -129,6 +130,7 @@ class Tracking(QMainWindow):
             self.ui.save.show()
             self.ui.track_cells.hide()
             self.ui.groupBox.hide()
+
         if self.ongoing:
             QMessageBox.warning(
                 self.ui,
@@ -136,7 +138,6 @@ class Tracking(QMainWindow):
             return
         worker = Thread(target=workerThreadFunc)
         worker.start()
-
 
     def save(self):
         self.ui.progressBar.hide()
@@ -163,16 +164,17 @@ class Tracking(QMainWindow):
             all_cells[0] = rank_line_then_y(all_cells[0])
             domTree = judge_blank_track(domTree)
             # domTree.write(f"{filePath}")
-            for i in range(self.length-1):
+            for i in range(self.length - 1):
                 sleep(1)
                 tracked_cells, track_id, domTree = tracked_cells_to_xml(i, all_cells, tracked_cells,
                                                                         self.length, domTree, track_id,
                                                                         self.time_intervel)
                 so1.progress_update.emit(i + 1)
-                #self.ui.progressBar.setValue(i + 1)
+                # self.ui.progressBar.setValue(i + 1)
             domTree.write(f"{filePath}")
             self.ongoing = False
             t1.terminate.emit()
+
         if self.ongoing:
             QMessageBox.warning(
                 self.ui,
@@ -181,6 +183,44 @@ class Tracking(QMainWindow):
 
         worker = Thread(target=workerThreadFunc, daemon=True)
         worker.start()
+
+
+class ClusteringWorker(QThread):
+    progress_update = Signal(int)
+
+    def __init__(self, base_direc, length):
+        super().__init__()
+        self.base_direc = base_direc
+        self.length = length
+        self.running = True
+
+    def run(self):
+        if ospath.exists(f'{self.base_direc}/tracking'):
+            clustered = get_imlist(f'{self.base_direc}/tracking', '.xlsx')
+        else:
+            clustered = []
+
+        so.progress_update.emit(len(clustered))  # Update progress bar
+        try:
+            cpus = max(1, multiprocessing.cpu_count() - 1)  # Avoid overloading CPU
+            with Pool(cpus) as pool:  # Ensure proper process cleanup
+                engine = ga_processing(self.base_direc)
+
+                ths = []
+                for idx in range(len(clustered), self.length):
+                    if not self.running:
+                        break
+                    r = pool.apply_async(engine, args=(idx,))
+                    ths.append(r)
+
+                for idx, r in enumerate(ths):
+                    r.wait()
+                    so.progress_update.emit(idx + 1)  # Update UI safely
+
+        except Exception as e:
+            print(f"Error in clustering: {e}")
+
+
 
 
 
@@ -231,7 +271,7 @@ class Clustering(QMainWindow):
         self.clickedPen = mkPen('b', width=2)
         self.lastClicked = []
         self.shrink = np.array([7, 70, 7]).T
-
+        self.worker = None
 
     def deletecell(self):
         choice = QMessageBox.question(
@@ -252,10 +292,11 @@ class Clustering(QMainWindow):
             preds_y = preds_y.astype(int)
             color = np.array(self.colorlist)
             s1 = ScatterPlotItem(size=10, pen=mkPen(None))
-            spots = [{'pos': XZ[i, :], 'data': 1, 'brush': mkColor(self.colorlist[preds_y[i]])} for i in range(np.shape(XZ)[0])]
+            spots = [{'pos': XZ[i, :], 'data': 1, 'brush': mkColor(self.colorlist[preds_y[i]])} for i in
+                     range(np.shape(XZ)[0])]
             s1.addPoints(spots)
             self.w1.addItem(s1)
-            s2_color = np.array([color[preds_y[i]][0:3]/255 for i in range(len(preds_y))])
+            s2_color = np.array([color[preds_y[i]][0:3] / 255 for i in range(len(preds_y))])
             s2 = GLScatterPlotItem(pos=np.array(cells_0[:, 1:4]) / self.shrink, color=s2_color, size=5)
             self.ui.threedView.addItem(s2)
             s1.sigClicked.connect(self.clicked)
@@ -264,6 +305,7 @@ class Clustering(QMainWindow):
 
         self.setProgress(0)
         self.ui.progressBar.show()
+
         def workerThreadFunc():
             self.ongoing = True
             shape = length_imgs(self.base_direc)
@@ -293,6 +335,7 @@ class Clustering(QMainWindow):
 
         self.setProgress(0)
         self.ui.progressBar.show()
+
         def workerThreadFunc():
             self.ongoing = True
             xml = get_imlist(self.base_direc, '.xml')
@@ -338,7 +381,6 @@ class Clustering(QMainWindow):
         self.ui.threedView.clear()
         self.ui.threedView.addItem(s2)
 
-
     def color2(self):
 
         refine_excel(self.base_direc, self.current, self.lastClicked, 1)
@@ -363,14 +405,14 @@ class Clustering(QMainWindow):
         self.ui.threedView.clear()
         self.ui.threedView.addItem(s2)
 
-
     def color4(self):
 
         refine_excel(self.base_direc, self.current, self.lastClicked, 3)
         for p in self.lastClicked:
             p.setBrush(mkColor(self.colorlist[3]))
         cells_0, _ = read_excels_lines(self.current, self.base_direc)
-        cells_0_3d = np.array([tuple(item/255 for item in self.colorlist[int(cells_0[i][-1])][:3]) for i in range(len(cells_0))])
+        cells_0_3d = np.array(
+            [tuple(item / 255 for item in self.colorlist[int(cells_0[i][-1])][:3]) for i in range(len(cells_0))])
         s2 = GLScatterPlotItem(pos=np.array(cells_0[:, 1:4]) / self.shrink, color=cells_0_3d, size=5)
         self.ui.threedView.clear()
         self.ui.threedView.addItem(s2)
@@ -417,7 +459,8 @@ class Clustering(QMainWindow):
         for p in self.lastClicked:
             p.setBrush(mkColor(self.colorlist[7]))
         cells_0, _ = read_excels_lines(self.current, self.base_direc)
-        cells_0_3d = np.array([tuple(item/255 for item in self.colorlist[int(cells_0[i][-1])][:3]) for i in range(len(cells_0))])
+        cells_0_3d = np.array(
+            [tuple(item / 255 for item in self.colorlist[int(cells_0[i][-1])][:3]) for i in range(len(cells_0))])
         s2 = GLScatterPlotItem(pos=np.array(cells_0[:, 1:4]) / self.shrink, color=cells_0_3d, size=5)
         self.ui.threedView.clear()
         self.ui.threedView.addItem(s2)
@@ -446,12 +489,11 @@ class Clustering(QMainWindow):
         self.ui.color8.show()
         self.ui.cellDelete.show()
         for p in self.lastClicked:
-            if p!=None:
+            if p != None:
                 p.resetPen()
         for i, p in enumerate(points):
             p.setPen(self.clickedPen)
         self.lastClicked = points
-
 
     def choosefile(self):
         filePath = QFileDialog.getExistingDirectory(self.ui, "select directory")
@@ -462,45 +504,25 @@ class Clustering(QMainWindow):
         self.ui.textEdit.setPlaceholderText(f'{self.base_direc}')
 
     def showcurrent(self):
-        self.ui.currentImage.setPlaceholderText(f'No.{self.current+1} / {self.length} ')
+        self.ui.currentImage.setPlaceholderText(f'No.{self.current + 1} / {self.length} ')
 
     def setProgress(self, value):
         self.ui.progressBar.setValue(value)
 
     def clustering(self):
-        def workerThreadFunc():
-            if ospath.exists(f'{self.base_direc}/tracking'):
-                clustered = get_imlist(f'{self.base_direc}/tracking', '.xlsx')
-            else:
-                clustered = []
-            self.ui.progressBar.setValue(len(clustered))
-            self.ui.progressBar.show()
-            self.ongoing = True
-
-            try:
-                pool = Pool(8)  # on 8 processors
-                engine = ga_processing(self.base_direc)
-
-                ths = []
-                for idx in range(len(clustered), self.length):
-                    r = pool.apply_async(engine, args=(idx,))
-                    ths.append(r)
-                for idx, r in enumerate(ths):
-                    r.wait()
-                    so.progress_update.emit(idx + 1)
-            finally:  # To make sure processes are closed in the end, even if errors happen
-                pool.close()
-                pool.join()
-
-            self.ongoing = False
-        if self.ongoing:
-            QMessageBox.warning(
-                self.window,
-                'Warning', 'In progress, please wait')
+        self.setProgress(0)
+        self.ui.progressBar.show()
+        if self.worker and self.worker.isRunning():
+            QMessageBox.warning(self.window, 'Warning', 'In progress, please wait', QMessageBox.Ok)
             return
 
-        worker = Thread(target=workerThreadFunc, daemon=True)
-        worker.start()
+        self.worker = ClusteringWorker(self.base_direc, self.length)
+        self.worker.progress_update.connect(self.ui.progressBar.setValue)  # Update progress bar
+        self.worker.start()
+
+    def onClusteringFinished(self):
+        self.worker = None  # Cleanup reference
+        print("Clustering finished.")
 
 
     def clustering_check(self):
@@ -515,7 +537,7 @@ class Clustering(QMainWindow):
             else:
                 self.ui.refresh.show()
                 self.clustered_frames = clustered
-                if len(clustered) != 1 and self.current != self.length-1:
+                if len(clustered) != 1 and self.current != self.length - 1:
                     self.ui.next.show()
                 cells_0, unit_vector = read_excels_lines(self.current, self.base_direc)
                 unit_vector = unit_vector.split(" ")
@@ -529,8 +551,8 @@ class Clustering(QMainWindow):
                          range(np.shape(XZ)[0])]
                 s1.addPoints(spots)
                 self.w1.addItem(s1)
-                s2_color = np.array([color[preds_y[i]][0:3]/255 for i in range(len(preds_y))])
-                s2 = GLScatterPlotItem(pos=np.array(cells_0[:, 1:4])/self.shrink, color=s2_color, size=5)
+                s2_color = np.array([color[preds_y[i]][0:3] / 255 for i in range(len(preds_y))])
+                s2 = GLScatterPlotItem(pos=np.array(cells_0[:, 1:4]) / self.shrink, color=s2_color, size=5)
                 self.ui.threedView.addItem(s2)
                 s1.sigClicked.connect(self.clicked)
 
@@ -547,7 +569,7 @@ class Clustering(QMainWindow):
         self.current += 1
         self.showcurrent()
         self.hide_color_buttons()
-        if self.current == len(self.clustered_frames)-1:
+        if self.current == len(self.clustered_frames) - 1:
             self.ui.next.hide()
         self.ui.previous.show()
         cells_0, unit_vector = read_excels_lines(self.current, self.base_direc)
@@ -563,7 +585,7 @@ class Clustering(QMainWindow):
                  range(np.shape(XZ)[0])]
         s1.addPoints(spots)
         self.w1.addItem(s1)
-        s2_color = np.array([color[preds_y[i]][0:3]/255 for i in range(len(preds_y))])
+        s2_color = np.array([color[preds_y[i]][0:3] / 255 for i in range(len(preds_y))])
         s2 = GLScatterPlotItem(pos=np.array(cells_0[:, 1:4]) / self.shrink, color=s2_color, size=5)
         self.ui.threedView.addItem(s2)
         s1.sigClicked.connect(self.clicked)
@@ -581,7 +603,7 @@ class Clustering(QMainWindow):
             input_img_no = int(input_img_no)
             if input_img_no >= 1 and input_img_no <= len(self.clustered_frames):
                 self.ui.lineEdit.clear()
-                self.goto_which_img(input_img_no-1)
+                self.goto_which_img(input_img_no - 1)
             else:
                 QMessageBox.critical(
                     self.ui,
@@ -650,7 +672,7 @@ class Clustering(QMainWindow):
                  range(np.shape(XZ)[0])]
         s1.addPoints(spots)
         self.w1.addItem(s1)
-        s2_color = np.array([color[preds_y[i]][0:3]/255 for i in range(len(preds_y))])
+        s2_color = np.array([color[preds_y[i]][0:3] / 255 for i in range(len(preds_y))])
         s2 = GLScatterPlotItem(pos=np.array(cells_0[:, 1:4]) / self.shrink, color=s2_color, size=5)
         self.ui.threedView.addItem(s2)
         s1.sigClicked.connect(self.clicked)
@@ -671,6 +693,7 @@ class Clustering(QMainWindow):
             self.tracking.ui.show()
             self.ui.close()
 
+
 class Detection(QMainWindow):
     def __init__(self):
         so2.progress_update.connect(self.setProgress)
@@ -689,7 +712,7 @@ class Detection(QMainWindow):
             'Detection is completed!')
         self.ui.close()
 
-    def setProgress(self,value):
+    def setProgress(self, value):
         self.ui.progressBar.setValue(value)
 
     def set_text(self):
@@ -704,6 +727,7 @@ class Detection(QMainWindow):
 
     def cell_detect(self):
         self.ui.progressBar.show()
+
         def workerThreadFunc():
             dev = device("cuda" if cuda.is_available() else "cpu")
             if self.ui.radioButton.isChecked():
@@ -715,7 +739,6 @@ class Detection(QMainWindow):
                 model = unet3d()
                 model.cuda(dev)
                 check_point = load(r'./3d_unet_best_goh.pth', map_location=dev)
-
 
             model.load_state_dict(check_point['state_dict'])
             model.eval()
@@ -740,8 +763,7 @@ class Detection(QMainWindow):
 
                 cell_id, domTree = xml_from_centroids(idx, commons, mitotics, domTree, cell_id,
                                                       time_intervel, self.base_direc)
-                so2.progress_update.emit(idx+1)
-                
+                so2.progress_update.emit(idx + 1)
 
             domTree.write(f"{xml[0]}")
             self.ongoing = False
@@ -770,6 +792,7 @@ class Stats(QMainWindow):
 
         self.ui.close()
 
+
 class Entrance(QMainWindow):
     def __init__(self):
         self.ui = QUiLoader().load('entrance.ui')
@@ -785,6 +808,7 @@ class Entrance(QMainWindow):
         self.detect = Detection()
         self.detect.ui.show()
         self.ui.close()
+
 
 if __name__ == '__main__':
     app = QApplication([])
