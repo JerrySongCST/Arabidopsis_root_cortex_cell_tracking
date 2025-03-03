@@ -20,12 +20,12 @@ For more details, refer to our paper: [[`Paper`](https://academic.oup.com/pcp/ar
 
 We provide a GUI system for this method. If you do not wish to install Python and PyTorch manually, you can download the packaged ZIP file [here](https://drive.google.com/file/d/15m6AjEMTTf5cfnT3oOeC8sA0WWa-XDQE/view?usp=sharing) and run the executable (`.exe`). Note: This is only available for Windows users.
 
-For manual installation, we tested our code on **Python 3.10** with **Torch 2.3.0**. We recommend using **Anaconda** to set up an environment and install dependencies:
+For manual installation, we tested our code on **Python 3.8** with **Torch 2.3.0**. We recommend using **Anaconda** to set up an environment and install dependencies:
 
 ### Steps:
 
 ```bash
-conda create -n Arabidopsis python=3.10
+conda create -n Arabidopsis python=3.8
 conda activate Arabidopsis
 pip install torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 --index-url https://download.pytorch.org/whl/cu118
 git clone https://github.com/JerrySongCST/Arabidopsis_root_cortex_cell_tracking.git && cd Arabidopsis_root_cortex_cell_tracking
