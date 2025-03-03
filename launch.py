@@ -19,20 +19,20 @@ import multiprocessing
 multiprocessing.freeze_support()
 
 
-# 信号库
+
 class SignalStore(QObject):
-    # 定义一种信号
+    
     progress_update = Signal(int)
-    # 还可以定义其他作用的信号
+    
 
 class TerminateSignal(QObject):
     terminate = Signal()
 
 class BoolSignal(QObject):
-    # 定义一种信号
+    
     progress_update = Signal(bool)
 
-# 实例化
+
 so = SignalStore()
 so1 = SignalStore()
 so2 = SignalStore()
@@ -55,8 +55,6 @@ class Tracking(QMainWindow):
         self.ui.progressBar.hide()
         self.ui.progressBar.setRange(0, self.length)
         self.ui.link_lines.clicked.connect(self.link)
-        self.ui.check_mitotic.clicked.connect(self.check_mitotic)
-        self.ui.check_mitotic.hide()
         self.ui.track_cells.hide()
         self.ui.groupBox.hide()
         self.ui.save.hide()
@@ -89,7 +87,7 @@ class Tracking(QMainWindow):
                 so1.progress_update.emit(i+1)
                 # self.ui.progressBar.setValue(i + 1)
             self.ongoing = False
-            self.ui.check_mitotic.show()
+            self.ui.track_cells.show()
             self.ui.link_lines.hide()
         if self.ongoing:
             QMessageBox.warning(
@@ -105,33 +103,6 @@ class Tracking(QMainWindow):
         choice = QMessageBox.information(self.ui, "Info",
                                          f"The cells with the following ids are suspicious\n {flattened_list}")
 
-    def check_mitotic(self):
-        self.ui.progressBar.show()
-        def workerThreadFunc():
-            self.ongoing = True
-            check_signal = False
-            for i in range(self.length):
-                sleep(1)
-                cells_0, _ = read_excels_lines(i, self.base_direc)
-                caution_ids = mitotic_check(cells_0)
-                self.mitotic_ids.append(caution_ids)
-                so1.progress_update.emit(i + 1)
-            self.ongoing = False
-            check_signal = True
-            b1.progress_update.emit(check_signal)
-            self.ui.track_cells.show()
-            self.ui.groupBox.show()
-            self.ui.check_mitotic.hide()
-
-        if self.ongoing:
-            QMessageBox.warning(
-                self.ui,
-                'Warning', 'In progress, please wait')
-            return
-
-        worker = Thread(target=workerThreadFunc, daemon=True)
-        worker.start()
-
     def track(self):
         self.ui.progressBar.hide()
         self.ui.progressBar.setRange(0, self.length-1)
@@ -141,21 +112,8 @@ class Tracking(QMainWindow):
             self.ongoing = True
             get_mitotic_color(self.base_direc)
             all_spots = track_cells(self.length, self.base_direc)
-            # nethermost = nethermost_8_cells(np.array(all_spots[0]))
             nethermost, zs, xs = nethermost_8_cells_y(np.array(all_spots[0]))
             nethermost_index = [0 for _ in range(8)]
-
-            # dev = device("cuda" if cuda.is_available() else "cpu")
-            # model = UNet()
-            # model.to(dev)
-            # # check_point = load(r'./u_net_cell_best_new_zdouble.pth')
-            # check_point = load(r'./unet_cell_best_new.pth')
-            # model.load_state_dict(check_point['state_dict'])
-            # model.eval()
-            # pred_masks = []
-            # for i in range(self.length):
-            #     mask = detect_middle_slice(model, self.base_direc, i, self.imgs[i][int(self.img_shape[1]/2)], dev)
-            #     pred_masks.append(mask)
 
             for i in range(self.length - 1):
                 sleep(1)
@@ -163,21 +121,10 @@ class Tracking(QMainWindow):
                 reset_excels(i, self.base_direc)
                 cells_before = np.array(all_spots[i])
                 cells_later = np.array(all_spots[i + 1])
-                if self.ui.radioButton_2.isChecked():
-                    link_spots(cells_before, cells_later, i, self.base_direc)
-                else:
-                    off_set = []
-                    for q in range(8):
-                        off_set.append(translation_calculate(self.imgs[i][zs[q]], self.imgs[i+1][zs[q]], i))
-                        # off_set.append(affine_calculate(self.imgs[i][zs[q]], self.imgs[i+1][zs[q]], i, q,
-                        #                                 [xs[q], nethermost[q]]))
-                    # nethermost, nethermost_index = link_spots_by_xy(cells_before, cells_later, i, self.base_direc,
-                    #                                                 nethermost, nethermost_index, off_set)
+                link_spots(cells_before, cells_later, i, self.base_direc)
 
-                    nethermost, nethermost_index, zs, xs = link_spots_by_y(cells_before, cells_later, i, self.base_direc,
-                                                                           nethermost, nethermost_index, off_set)
                 so1.progress_update.emit(i + 1)
-                # self.ui.progressBar.setValue(i + 1)
+
             self.ongoing = False
             self.ui.save.show()
             self.ui.track_cells.hide()
@@ -234,7 +181,7 @@ class Tracking(QMainWindow):
 
         worker = Thread(target=workerThreadFunc, daemon=True)
         worker.start()
-        # worker.join()
+
 
 
 class Clustering(QMainWindow):
@@ -298,7 +245,7 @@ class Clustering(QMainWindow):
             self.ui.threedView.clear()
             cells_0, unit_vector = read_excels_lines(self.current, self.base_direc)
             unit_vector = unit_vector.split(" ")
-            # print(unit_vector)
+
             unit_vector = list(map(float, unit_vector))
             XZ = points_projection(unit_vector, cells_0[:, 1:4])
             preds_y = cells_0[:, -1]
@@ -314,7 +261,7 @@ class Clustering(QMainWindow):
             s1.sigClicked.connect(self.clicked)
 
     def reload_excel(self):
-        # self.ui.progressBar.setValue(1)
+
         self.setProgress(0)
         self.ui.progressBar.show()
         def workerThreadFunc():
@@ -343,7 +290,7 @@ class Clustering(QMainWindow):
         worker.start()
 
     def sort_id(self):
-        # self.ui.progressBar.setValue(1)
+
         self.setProgress(0)
         self.ui.progressBar.show()
         def workerThreadFunc():
@@ -380,11 +327,7 @@ class Clustering(QMainWindow):
         self.ui.cellDelete.hide()
 
     def color1(self):
-        # choice = QMessageBox.question(
-        #     self.ui,
-        #     'confirm',
-        #     'Are you sure to change the selected points\' color into this one ?')
-        # if choice == QMessageBox.Yes:
+
         refine_excel(self.base_direc, self.current, self.lastClicked, 0)
         for p in self.lastClicked:
             p.setBrush(mkColor(self.colorlist[0]))
@@ -397,11 +340,7 @@ class Clustering(QMainWindow):
 
 
     def color2(self):
-        # choice = QMessageBox.question(
-        #     self.ui,
-        #     'confirm',
-        #     'Are you sure to change the selected points\' color into this one ?')
-        # if choice == QMessageBox.Yes:
+
         refine_excel(self.base_direc, self.current, self.lastClicked, 1)
         for p in self.lastClicked:
             p.setBrush(mkColor(self.colorlist[1]))
@@ -413,11 +352,7 @@ class Clustering(QMainWindow):
         self.ui.threedView.addItem(s2)
 
     def color3(self):
-        # choice = QMessageBox.question(
-        #     self.ui,
-        #     'confirm',
-        #     'Are you sure to change the selected points\' color into this one ?')
-        # if choice == QMessageBox.Yes:
+
         refine_excel(self.base_direc, self.current, self.lastClicked, 2)
         for p in self.lastClicked:
             p.setBrush(mkColor(self.colorlist[2]))
@@ -430,11 +365,7 @@ class Clustering(QMainWindow):
 
 
     def color4(self):
-        # choice = QMessageBox.question(
-        #     self.ui,
-        #     'confirm',
-        #     'Are you sure to change the selected points\' color into this one ?')
-        # if choice == QMessageBox.Yes:
+
         refine_excel(self.base_direc, self.current, self.lastClicked, 3)
         for p in self.lastClicked:
             p.setBrush(mkColor(self.colorlist[3]))
@@ -445,11 +376,7 @@ class Clustering(QMainWindow):
         self.ui.threedView.addItem(s2)
 
     def color5(self):
-        # choice = QMessageBox.question(
-        #     self.ui,
-        #     'confirm',
-        #     'Are you sure to change the selected points\' color into this one ?')
-        # if choice == QMessageBox.Yes:
+
         refine_excel(self.base_direc, self.current, self.lastClicked, 4)
         for p in self.lastClicked:
             p.setBrush(mkColor(self.colorlist[4]))
@@ -461,11 +388,7 @@ class Clustering(QMainWindow):
         self.ui.threedView.addItem(s2)
 
     def color6(self):
-        # choice = QMessageBox.question(
-        #     self.ui,
-        #     'confirm',
-        #     'Are you sure to change the selected points\' color into this one ?')
-        # if choice == QMessageBox.Yes:
+
         refine_excel(self.base_direc, self.current, self.lastClicked, 5)
         for p in self.lastClicked:
             p.setBrush(mkColor(self.colorlist[5]))
@@ -477,11 +400,7 @@ class Clustering(QMainWindow):
         self.ui.threedView.addItem(s2)
 
     def color7(self):
-        # choice = QMessageBox.question(
-        #     self.ui,
-        #     'confirm',
-        #     'Are you sure to change the selected points\' color into this one ?')
-        # if choice == QMessageBox.Yes:
+
         refine_excel(self.base_direc, self.current, self.lastClicked, 6)
         for p in self.lastClicked:
             p.setBrush(mkColor(self.colorlist[6]))
@@ -493,11 +412,7 @@ class Clustering(QMainWindow):
         self.ui.threedView.addItem(s2)
 
     def color8(self):
-        # choice = QMessageBox.question(
-        #     self.ui,
-        #     'confirm',
-        #     'Are you sure to change the selected points\' color into this one ?')
-        # if choice == QMessageBox.Yes:
+
         refine_excel(self.base_direc, self.current, self.lastClicked, 7)
         for p in self.lastClicked:
             p.setBrush(mkColor(self.colorlist[7]))
@@ -565,8 +480,7 @@ class Clustering(QMainWindow):
             try:
                 pool = Pool(8)  # on 8 processors
                 engine = ga_processing(self.base_direc)
-                # parameters = [idx for idx in range(len(clustered), self.length)]
-                # data_outputs = pool.map(engine, parameters)
+
                 ths = []
                 for idx in range(len(clustered), self.length):
                     r = pool.apply_async(engine, args=(idx,))
@@ -578,13 +492,6 @@ class Clustering(QMainWindow):
                 pool.close()
                 pool.join()
 
-            # for idx in range(len(clustered), self.length):
-            #     sleep(1)
-            #     # 设置进度值
-            #     read_xml(self.base_direc, idx)
-            #     so.progress_update.emit(idx+1)
-            #
-                # self.ui.progressBar.setValue(idx + 1)
             self.ongoing = False
         if self.ongoing:
             QMessageBox.warning(
@@ -733,7 +640,6 @@ class Clustering(QMainWindow):
         self.ui.next.show()
         cells_0, unit_vector = read_excels_lines(self.current, self.base_direc)
         unit_vector = unit_vector.split(" ")
-        # print(unit_vector)
         unit_vector = list(map(float, unit_vector))
         XZ = points_projection(unit_vector, cells_0[:, 1:4])
         preds_y = cells_0[:, -1]
@@ -800,7 +706,6 @@ class Detection(QMainWindow):
         self.ui.progressBar.show()
         def workerThreadFunc():
             dev = device("cuda" if cuda.is_available() else "cpu")
-            # check_point = load(r'./u_net_cell_best_new_zdouble.pth')
             if self.ui.radioButton.isChecked():
                 model = UNet()
                 model.to(dev)
@@ -828,7 +733,6 @@ class Detection(QMainWindow):
             self.ongoing = True
             for idx in range(self.length):
                 sleep(1)
-                # 设置进度值
                 if self.ui.radioButton.isChecked():
                     commons, mitotics = test_model(model, self.base_direc, idx, imgs, dev, whether_transpose)
                 else:
@@ -837,7 +741,7 @@ class Detection(QMainWindow):
                 cell_id, domTree = xml_from_centroids(idx, commons, mitotics, domTree, cell_id,
                                                       time_intervel, self.base_direc)
                 so2.progress_update.emit(idx+1)
-                # self.ui.progressBar.setValue(idx + 1)
+                
 
             domTree.write(f"{xml[0]}")
             self.ongoing = False
