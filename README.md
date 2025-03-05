@@ -58,7 +58,7 @@ python launch.py
 
 ### Cell Detection 
 
-1. Downloading Checkpoints as instructed above.
+1. Downloading Pre-trained Model Checkpoints for Detection Algorithm.
 
 2. Click **"Cell Detection"**:
    
