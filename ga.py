@@ -464,15 +464,21 @@ def xz_lines_from_excel(directory, volume):
                           the_sheet.cell(row=index, column=6).value
                           ])
     all_cells = np.array(all_cells)
-    all_cells_sorted = all_cells[all_cells[:, 1].argsort()]
-    line_ranks = []
+
     cells_locations = []
-    for y in range(int(len(all_cells_sorted)/2), len(all_cells_sorted)):
-        if all_cells_sorted[y][3] not in line_ranks:
-            line_ranks.append(all_cells_sorted[y][3])
-            cells_locations.append(all_cells_sorted[y][:3])
-        if len(line_ranks) == 8:
-            break;
+    line_ranks = []
+
+    for rank in range(8):  # loop through 0 to 7
+        rank_group = all_cells[all_cells[:, 3] == rank]
+        if len(rank_group) == 0:
+            continue
+        # Sort by column 2 (z)
+        rank_group_sorted = rank_group[rank_group[:, 1].astype(float).argsort()]
+        mid_index = len(rank_group_sorted) // 2
+        median_point = rank_group_sorted[mid_index]
+        cells_locations.append(median_point[:3])
+        line_ranks.append(rank)
+
     return cells_locations, line_ranks
 
 def line_correspondence(directory, volume, rank):
