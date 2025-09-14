@@ -181,6 +181,13 @@ If you use our code or dataset, please cite:
   publisher={Oxford University Press UK}
 }
 
+@article{song2025accurate,
+  title={Accurate Tracking of Arabidopsis Root Cortex Cell Nuclei in 3D Time-Lapse Microscopy Images Based on Genetic Algorithm},
+  author={Song, Yu and Goh, Tatsuaki and Li, Yinhao and Dong, Jiahua and Miyashima, Shunsuke and Iwamoto, Yutaro and Kondo, Yohei and Nakajima, Keiji and Chen, Yen-wei},
+  journal={arXiv preprint arXiv:2504.12676},
+  year={2025}
+}
+
 @article{song2024dividing,
   title={Dividing and Non-dividing Cell Detection by Segmentation on Arabidopsis Root Images Using Light-weight U-Net},
   author={Song, Yu and Deng, Zeping and Li, Yinhao and others},
