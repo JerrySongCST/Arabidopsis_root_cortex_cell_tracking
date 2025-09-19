@@ -14,7 +14,7 @@ We introduce an accurate tracking method based on a Genetic Algorithm (GA) and K
 
 With precise detection and clustering, Arabidopsis root nuclei can be accurately tracked. To our knowledge, this is the first successful attempt to address a long-standing challenge in time-lapse microscopy of root meristems by providing an accurate tracking method for Arabidopsis root nuclei.
 
-For more details, refer to our paper: [[`Paper`](https://academic.oup.com/pcp/article/64/11/1262/7323573)].
+For more details, refer to our paper: [[`Paper`](https://arxiv.org/abs/2504.12676)] [[`Paper`](https://academic.oup.com/pcp/article/64/11/1262/7323573)].
 
 ## Installation
 
